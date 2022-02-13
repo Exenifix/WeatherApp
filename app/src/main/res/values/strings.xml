@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="input_desc">Введите название города</string>
+    <string name="input_default_value">Москва</string>
+    <string name="button_text">Искать</string>
+</resources>
