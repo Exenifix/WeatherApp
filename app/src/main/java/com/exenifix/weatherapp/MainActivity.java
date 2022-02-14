@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,8 +21,13 @@ public class MainActivity extends AppCompatActivity {
     protected BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            String data = intent.getStringExtra("DATA");
             progressBar.setVisibility(View.INVISIBLE);
-            dataField.setText(intent.getStringExtra("DATA"));
+            if (data == null) {
+                Toast.makeText(getApplicationContext(), "Такого города не существует!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            dataField.setText(data);
         }
     };
 

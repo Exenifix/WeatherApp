@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -47,8 +49,12 @@ public class WeatherService extends Service {
             String result;
             //WARNING: this API may not be available. You can find the API script on https://github.com/Exenifix/weather-getter-api
             String url = "http://128.199.6.166:1234/weather?city=" + city;
-            JSONObject json = readFromURL(url);
-            assert json != null;
+            JSONObject json;
+            try {
+                json = readFromURL(url);
+            } catch (APIException e) {
+                return null;
+            }
 
             try {
                 JSONObject weatherMain = json.getJSONObject("main");
@@ -64,16 +70,21 @@ public class WeatherService extends Service {
                 return result;
             } catch (JSONException e) {
                 e.printStackTrace();
+                return null;
             }
-
-            return null;
         }
 
-        private JSONObject readFromURL(String urlString) {
+        private JSONObject readFromURL(String urlString) throws APIException {
             InputStream input;
             try {
                 URL url = new URL(urlString);
-                input = url.openStream();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+                if (connection.getResponseCode() != 200) {
+                    throw new APIException();
+                }
+                input = connection.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 StringBuilder sb = new StringBuilder();
 
