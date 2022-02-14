@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         dataField = findViewById(R.id.dataField);
         progressBar = findViewById(R.id.searchIndicator);
 
-        ((Button) findViewById(R.id.inputButton)).setOnClickListener((View v) -> {
+        findViewById(R.id.inputButton).setOnClickListener((View v) -> {
             progressBar.setVisibility(View.VISIBLE);
             dataField.setText("");
             String text = inputField.getText().toString();
