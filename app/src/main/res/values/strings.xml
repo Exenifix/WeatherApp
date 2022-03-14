@@ -3,4 +3,6 @@
     <string name="input_desc">Введите название города</string>
     <string name="input_default_value">Москва</string>
     <string name="button_text">Искать</string>
+    <string name="default_server">http://147.182.254.173:5001/</string>
+    <string name="update_button_text">Установить сервер</string>
 </resources>

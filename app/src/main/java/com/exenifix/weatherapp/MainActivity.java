@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
     private EditText inputField;
     private TextView dataField;
+    private EditText serverInputField;
+    private TextView currentServerText;
     private ProgressBar progressBar;
     protected BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -30,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
             dataField.setText(data);
         }
     };
+    private SharedPreferences sharedPrefs;
+    private SharedPreferences.Editor sharedPrefsEditor;
+    private String serverURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +44,41 @@ public class MainActivity extends AppCompatActivity {
         inputField = findViewById(R.id.inputField);
         dataField = findViewById(R.id.dataField);
         progressBar = findViewById(R.id.searchIndicator);
+        serverInputField = findViewById(R.id.server_field);
+        currentServerText = findViewById(R.id.server_text);
 
-        findViewById(R.id.inputButton).setOnClickListener((View v) -> {
-            progressBar.setVisibility(View.VISIBLE);
-            dataField.setText("");
-            String text = inputField.getText().toString();
-            if (text.equals("")) text = "Москва";
-            Intent i = new Intent(this, WeatherService.class);
-            i.putExtra("CITY", text);
-            startService(i);
-        });
+        sharedPrefs = getPreferences(MODE_PRIVATE);
+        sharedPrefsEditor = sharedPrefs.edit();
+        serverURL = sharedPrefs.getString("baseURL", getString(R.string.default_server));
+        if (!serverURL.endsWith("/")) {
+            serverURL += "/";
+        }
+        currentServerText.setText("Current server: " + serverURL);
+
+        findViewById(R.id.inputButton).setOnClickListener(this::onSearchButtonClick);
+        findViewById(R.id.update_server_button).setOnClickListener(this::onSetServerButtonClick);
 
         registerReceiver(receiver, new IntentFilter(WeatherService.CHANNEL));
+    }
+
+    private void onSearchButtonClick(View v) {
+        progressBar.setVisibility(View.VISIBLE);
+        dataField.setText("");
+        String text = inputField.getText().toString();
+        if (text.equals("")) text = "Москва";
+        Intent i = new Intent(this, WeatherService.class);
+        i.putExtra("CITY", text);
+        i.putExtra("URL", serverURL);
+        startService(i);
+    }
+
+    private void onSetServerButtonClick(View v) {
+        String newUrl = serverInputField.getText().toString();
+        if (newUrl.length() == 0) {
+            Toast.makeText(this, "Server field must not be empty!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        sharedPrefsEditor.putString("baseURL", newUrl);
+        Toast.makeText(this, "Updated the server successfully!", Toast.LENGTH_SHORT).show();
     }
 }

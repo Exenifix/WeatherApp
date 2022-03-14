@@ -22,14 +22,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
         android:layout_marginTop="2dp"
+        android:autofillHints="Moscow"
         android:ems="10"
         android:hint="@string/input_default_value"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:textColorHint="#757575"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        android:autofillHints="Moscow" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
         android:id="@+id/inputButton"
@@ -50,7 +50,7 @@
         android:layout_marginTop="7dp"
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/inputButton"
-        app:layout_constraintTop_toBottomOf="@+id/inputField"/>
+        app:layout_constraintTop_toBottomOf="@+id/inputField" />
 
     <TextView
         android:id="@+id/dataField"
@@ -63,4 +63,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputButton"
         tools:text="Температура: 20\nОблачность: ясно\nДавление:\nВлажность: 100\nНаправление ветра: 360\nСкорость ветра: 6 м/с" />
+
+    <TextView
+        android:id="@+id/server_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="#AFAFAF"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/update_server_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#AAAAAA"
+        android:text="@string/update_button_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <EditText
+        android:id="@+id/server_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:ems="10"
+        android:hint="@string/default_server"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/update_server_button"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>

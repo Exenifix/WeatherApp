@@ -4,7 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.widget.Toast;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +20,8 @@ import java.util.Locale;
 
 public class WeatherService extends Service {
     public static final String CHANNEL = "WEATHER_SERVICE";
+    private final String LOG_TAG = "WeatherService";
+    private String BASE_URL;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -28,6 +30,7 @@ public class WeatherService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        BASE_URL = intent.getStringExtra("URL");
         WeatherGetter weatherGetter = new WeatherGetter();
         weatherGetter.execute(intent.getStringExtra("CITY"));
 
@@ -47,12 +50,13 @@ public class WeatherService extends Service {
         protected String doInBackground(String... cities) {
             String city = cities[0];
             String result;
-            //WARNING: this API may not be available. You can find the API script on https://github.com/Exenifix/weather-getter-api
-            String url = "http://128.199.6.166:1234/weather?city=" + city;
+            String url = BASE_URL + "weather?city=" + city;
+            Log.i(LOG_TAG, "Making request to " + url);
             JSONObject json;
             try {
                 json = readFromURL(url);
             } catch (APIException e) {
+                Log.e(LOG_TAG, "Failed to perform a request. Error code: " + e.errorCode);
                 return null;
             }
 
@@ -81,8 +85,9 @@ public class WeatherService extends Service {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.connect();
-                if (connection.getResponseCode() != 200) {
-                    throw new APIException();
+                int responseCode = connection.getResponseCode();
+                if (responseCode != 200) {
+                    throw new APIException(responseCode);
                 }
                 input = connection.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
