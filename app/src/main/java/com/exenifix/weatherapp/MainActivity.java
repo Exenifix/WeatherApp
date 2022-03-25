@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         if (!serverURL.endsWith("/")) {
             serverURL += "/";
         }
-        currentServerText.setText("Current server: " + serverURL);
+        currentServerText.setText(getString(R.string.current_server, serverURL));
 
         findViewById(R.id.inputButton).setOnClickListener(this::onSearchButtonClick);
         findViewById(R.id.update_server_button).setOnClickListener(this::onSetServerButtonClick);
@@ -78,7 +78,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Server field must not be empty!", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (newUrl.endsWith("/")) {
+            newUrl += "/";
+        }
+        serverURL = newUrl;
+        currentServerText.setText(getString(R.string.current_server, newUrl));
         sharedPrefsEditor.putString("baseURL", newUrl);
+        sharedPrefsEditor.commit();
         Toast.makeText(this, "Updated the server successfully!", Toast.LENGTH_SHORT).show();
     }
 }
