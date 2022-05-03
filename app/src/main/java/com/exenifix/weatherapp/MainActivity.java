@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Server field must not be empty!", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (newUrl.endsWith("/")) {
+        if (!newUrl.endsWith("/")) {
             newUrl += "/";
         }
         serverURL = newUrl;
